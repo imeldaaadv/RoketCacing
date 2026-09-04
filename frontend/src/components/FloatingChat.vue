@@ -9,7 +9,72 @@ const user = useUserStore();
 const text = ref('');
 const chatBodyRef = ref(null);
 
+const bubblePos = ref({ x: null, y: null });
+let isDragging = false;
+let startX = 0, startY = 0;
+let initialBubbleX = 0, initialBubbleY = 0;
+let hasMoved = false;
+
+function onPointerDown(e) {
+  isDragging = true;
+  hasMoved = false;
+  startX = e.clientX;
+  startY = e.clientY;
+
+  const el = e.currentTarget;
+  const rect = el.getBoundingClientRect();
+  initialBubbleX = bubblePos.value.x !== null ? bubblePos.value.x : rect.left;
+  initialBubbleY = bubblePos.value.y !== null ? bubblePos.value.y : rect.top;
+
+  try {
+    el.setPointerCapture(e.pointerId);
+  } catch {}
+}
+
+function onPointerMove(e) {
+  if (!isDragging) return;
+  const dx = e.clientX - startX;
+  const dy = e.clientY - startY;
+  if (Math.abs(dx) > 4 || Math.abs(dy) > 4) {
+    hasMoved = true;
+  }
+
+  const maxX = window.innerWidth - 65;
+  const maxY = window.innerHeight - 65;
+
+  bubblePos.value = {
+    x: Math.min(Math.max(10, initialBubbleX + dx), maxX),
+    y: Math.min(Math.max(10, initialBubbleY + dy), maxY),
+  };
+}
+
+function onPointerUp(e) {
+  if (!isDragging) return;
+  isDragging = false;
+  try {
+    e.currentTarget.releasePointerCapture(e.pointerId);
+  } catch {}
+
+  if (!hasMoved) {
+    game.toggleChat();
+  }
+}
+
+const bubbleStyle = computed(() => {
+  if (bubblePos.value.x === null || bubblePos.value.y === null) {
+    return {};
+  }
+  return {
+    left: `${bubblePos.value.x}px`,
+    top: `${bubblePos.value.y}px`,
+    bottom: 'auto',
+    right: 'auto',
+    touchAction: 'none',
+  };
+});
+
 const messages = computed(() => game.chatMessages);
+
 
 function scrollToBottom() {
   nextTick(() => {
@@ -93,22 +158,27 @@ onMounted(() => {
 
 <template>
   <div>
-    <!-- Chat Trigger Bubble (Bottom Right) -->
+    <!-- Chat Trigger Bubble (Draggable / Movable) -->
     <div
       class="floating-chat-trigger"
-      title="Buka Live Chat Komunitas"
-      @click="game.toggleChat"
+      :style="bubbleStyle"
+      title="Buka Live Chat Komunitas (Tahan & Geser untuk Pindahkan)"
+      @pointerdown="onPointerDown"
+      @pointermove="onPointerMove"
+      @pointerup="onPointerUp"
+      @pointercancel="isDragging = false"
     >
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
       </svg>
       <span
-        v-if="unreadCount > 0"
+        v-if="game.unreadChatCount > 0"
         class="floating-chat-badge"
       >
-        {{ unreadCount }}
+        {{ game.unreadChatCount }}
       </span>
     </div>
+
 
 
     <!-- Slide-in Chat Drawer -->

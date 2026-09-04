@@ -146,10 +146,20 @@ function selectGame(gameName) {
 
     <!-- Riwayat Taruhan (History - Expands smoothly to fill height) -->
     <div class="panel history-panel">
-      <div class="panel-header">
-        <span>Riwayat Ronde</span>
-        <span style="color: var(--gold); font-size: 10px; font-family: 'JetBrains Mono';">Streak: {{ user.streak }}x</span>
+      <div class="panel-header" style="justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <span>Riwayat Ronde</span>
+          <span style="color: var(--gold); font-size: 10px; font-family: 'JetBrains Mono';">Streak: {{ user.streak }}x</span>
+        </div>
+        <button
+          class="sidebar-close-x"
+          title="Tutup Sidebar"
+          @click="emit('close-sidebar')"
+        >
+          ✕
+        </button>
       </div>
+
 
 
 

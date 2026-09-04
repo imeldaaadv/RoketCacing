@@ -1873,9 +1873,61 @@ header.top-nav::-webkit-scrollbar {
 
 
 @media (max-width: 768px) {
+  html, body {
+    height: auto !important;
+    min-height: 100% !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch;
+  }
+  .app-layout {
+    height: auto !important;
+    min-height: 100vh !important;
+    overflow-y: visible !important;
+    overflow-x: hidden !important;
+  }
   header.top-nav {
     padding: 0 10px;
     height: 50px;
+  }
+  .main-content {
+    height: auto !important;
+    min-height: calc(100vh - 50px) !important;
+    overflow-y: visible !important;
+    flex-direction: column !important;
+    padding: 8px 8px 95px 8px !important; /* Generous bottom padding so buttons are never cut off */
+  }
+  .center-stage {
+    height: auto !important;
+    overflow: visible !important;
+  }
+  .crash-container {
+    height: auto !important;
+    min-height: 0 !important;
+  }
+  .flight-arena {
+    min-height: 250px !important;
+    height: 250px !important;
+  }
+  .mines-wrapper {
+    flex-direction: column !important;
+    height: auto !important;
+  }
+  .mines-left-control {
+    width: 100% !important;
+  }
+  .mines-grid {
+    max-width: 290px !important;
+    max-height: 290px !important;
+  }
+  .roulette-wrapper, .bj-wrapper {
+    height: auto !important;
+  }
+  .roulette-stage {
+    min-height: 200px !important;
+  }
+  .bj-table {
+    min-height: 280px !important;
   }
   .game-sidebar-drawer {
     position: fixed;
@@ -1898,9 +1950,6 @@ header.top-nav::-webkit-scrollbar {
     backdrop-filter: blur(4px);
     z-index: 95;
   }
-  .main-content {
-    padding: 6px;
-  }
   .chat-drawer {
     right: 8px;
     bottom: 74px;
@@ -1909,5 +1958,6 @@ header.top-nav::-webkit-scrollbar {
     height: 380px;
   }
 }
+
 
 
